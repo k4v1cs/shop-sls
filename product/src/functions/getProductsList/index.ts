@@ -8,6 +8,7 @@ export default {
       http: {
         method: 'get',
         path: 'products',
+        cors: true,
         summary: 'Product list',
         description: 'Returns the full list of products',
         responseData: {
@@ -15,7 +16,7 @@ export default {
             description: 'The list of products',
             bodyType: 'Products',
           },
-          502: 'server error',
+          500: 'server error',
         }
       },
     },

@@ -7,3 +7,10 @@ export type Product = {
 }
 
 export type Products = Array<Product>;
+
+export type CreateProduct = {
+    count: number;
+    description: string;
+    price: number;
+    title: string;
+}
