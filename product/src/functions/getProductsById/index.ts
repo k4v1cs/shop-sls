@@ -8,6 +8,7 @@ export default {
       http: {
         method: 'get',
         path: 'products/{productId}',
+        cors: true,
         summary: 'Get product by id',
         description: 'Returns the product object belonging to the given id',
         responseData: {
@@ -16,7 +17,7 @@ export default {
             bodyType: 'Product',
           },
           404: "No product can be found for the given id",
-          502: 'server error',
+          500: 'server error',
         }
       },
     },

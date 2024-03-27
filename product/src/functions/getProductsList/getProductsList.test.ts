@@ -1,18 +1,9 @@
 import { describe, expect, it } from '@jest/globals';
 import { getProductsList } from './getProductsList';
-import { Product } from '@libs/productService';
+import { Product } from '@type/api-types';
+import { ProductService } from '@libs/productService';
 
-jest.mock('@libs/productService', () => {
-    return {
-        ProductService: jest.fn().mockImplementation(() => {
-            return {
-                getProducts: () => {
-                    return Promise.resolve(PRODUCTS);
-                },
-            };
-        })
-    };
-});
+jest.mock('@libs/productService');
 
 const PRODUCTS: Product[] = [{
     title: 'foo',
@@ -30,12 +21,23 @@ const PRODUCTS: Product[] = [{
 
 describe('getProductsList', () => {
     it('should return product list', async () => {
+        jest.spyOn(ProductService.prototype, 'getProducts').mockResolvedValue(PRODUCTS);
+
         const output = { statusCode: 200, body: JSON.stringify(PRODUCTS) };
 
-        const res = await getProductsList();
+        const res = await getProductsList({});
         expect(res).toEqual(
             expect.objectContaining(output)
         );
 
+    });
+    it('should return 500 on error', async () => {
+        jest.spyOn(ProductService.prototype, 'getProducts').mockRejectedValueOnce(new Error('Something went wrong'));
+        const output = { statusCode: 500 };
+
+        const res = await getProductsList({});
+        expect(res).toEqual(
+            expect.objectContaining(output)
+        );
     });
 });
