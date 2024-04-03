@@ -1,0 +1,38 @@
+{
+    "Records": [
+        {
+            "eventVersion": "2.1",
+            "eventSource": "aws:s3",
+            "awsRegion": "eu-central-1",
+            "eventTime": "2024-04-03T15:21:49.378Z",
+            "eventName": "ObjectCreated:Put",
+            "userIdentity": {
+                "principalId": "AWS:AROAV7WUJG7E3HAYMTROI:import-dev-importProductsFile"
+            },
+            "requestParameters": {
+                "sourceIPAddress": "11.11.11.11"
+            },
+            "responseElements": {
+                "x-amz-request-id": "Q44VPSJ57PEY7J67",
+                "x-amz-id-2": "IN25T2YiVLmp3od0sZHsOGs1AZ/mWdpVd3EYqfrjvceDtwU4kKif+F1OAUWPoLuPz/9ErG3mQ35KgkpJKQ4Y3Qsq/cXW+WI40Kj+mQ06WM8="
+            },
+            "s3": {
+                "s3SchemaVersion": "1.0",
+                "configurationId": "import-dev-importFileParser-ba8c047fc54cb100e2fea0f64ca9a33a",
+                "bucket": {
+                    "name": "veder666",
+                    "ownerIdentity": {
+                        "principalId": "A2G5XMGPBW8HX6"
+                    },
+                    "arn": "arn:aws:s3:::veder666"
+                },
+                "object": {
+                    "key": "uploaded/products-upload.csv",
+                    "size": 994,
+                    "eTag": "c5ae26afdfe50d62dac3002bb87ef527",
+                    "sequencer": "00660D740D572C11F6"
+                }
+            }
+        }
+    ]
+}
