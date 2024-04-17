@@ -3,7 +3,10 @@ import type { AWS } from '@serverless/typescript';
 import getProductsList from '@functions/getProductsList';
 import getProductsById from '@functions/getProductsById';
 import createProduct from '@functions/createProduct';
+import catalogBatchProcess from '@functions/catalogBatchProcess';
 import dynamoDb from './dynamoDb';
+import sqs from './sqs';
+import sns from './sns';
 
 const serverlessConfiguration: AWS = {
   service: 'product',
@@ -22,7 +25,10 @@ const serverlessConfiguration: AWS = {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
       NODE_OPTIONS: '--enable-source-maps --stack-trace-limit=1000',
       PRODUCTS_TABLE: '${self:custom.dynamoDb.productsTableName}',
-      STOCKS_TABLE: '${self:custom.dynamoDb.stocksTableName}'
+      STOCKS_TABLE: '${self:custom.dynamoDb.stocksTableName}',
+      SNS_ARN: {
+        Ref: 'SNSTopic',
+      },
     },
     iamRoleStatements: [{
       Effect: 'Allow',
@@ -36,10 +42,22 @@ const serverlessConfiguration: AWS = {
         'dynamodb:DeleteItem'
       ],
       Resource: [{"Fn::GetAtt": [ "productsTable", "Arn" ]}, {"Fn::GetAtt": [ "stocksTable", "Arn" ]}]
+    }, {
+      Effect: 'Allow',
+      Action: [
+        'sns:*'
+      ],
+      Resource: {Ref: 'SNSTopic'}
+    }, {
+      Effect: 'Allow',
+      Action: [
+        'ssm:GetParameter'
+      ],
+      Resource: "arn:aws:ssm:${self:provider.region}:${aws:accountId}:parameter/product/*"
     }],
   },
   // import the function via paths
-  functions: { getProductsList, getProductsById, createProduct },
+  functions: { getProductsList, getProductsById, createProduct, catalogBatchProcess },
   package: { individually: true },
   custom: {
     esbuild: {
@@ -53,7 +71,7 @@ const serverlessConfiguration: AWS = {
       concurrency: 10,
     },
     autoswagger: {
-      host: "ny8ieu19k1.execute-api.eu-central-1.amazonaws.com/dev"
+      host: "kwgco4rksg.execute-api.eu-central-1.amazonaws.com/dev"
     },
     dynamoDb: {
       productsTableName: 'products',
@@ -61,7 +79,11 @@ const serverlessConfiguration: AWS = {
     }
   },
   resources: {
-    Resources: dynamoDb
+    Resources: {
+      ...dynamoDb,
+      ...sqs,
+      ...sns
+    }
   }
 };
 

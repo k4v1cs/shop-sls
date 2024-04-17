@@ -21,7 +21,8 @@ const serverlessConfiguration: AWS = {
       NODE_OPTIONS: '--enable-source-maps --stack-trace-limit=1000',
       BUCKET_NAME: '${self:custom.s3.bucketName}',
       UPLOAD_FOLDER: '${self:custom.s3.uploadFolder}',
-      PARSED_FOLDER: '${self:custom.s3.parsedFolder}'
+      PARSED_FOLDER: '${self:custom.s3.parsedFolder}',
+      SQS_QUEUE_NAME: '${self:custom.sqs.queueName}',
     },
     iamRoleStatements: [{
       Effect: 'Allow',
@@ -33,6 +34,12 @@ const serverlessConfiguration: AWS = {
         "s3:DeleteObject"
       ],
       Resource: ['arn:aws:s3:::${self:custom.s3.bucketName}/${self:custom.s3.uploadFolder}/*', 'arn:aws:s3:::${self:custom.s3.bucketName}/${self:custom.s3.parsedFolder}/*']
+    }, {
+      Effect: 'Allow',
+      Action: [
+        'sqs:SendMessage'
+      ],
+      Resource: ['arn:aws:sqs:${self:provider.region}:${aws:accountId}:${self:custom.sqs.queueName}']
     }],
   },
   // import the function via paths
@@ -53,6 +60,9 @@ const serverlessConfiguration: AWS = {
       bucketName: 'veder666',
       uploadFolder: 'uploaded',
       parsedFolder: 'parsed'
+    },
+    sqs: {
+      queueName: 'catalogItemsQueue'
     }
   },
 };
